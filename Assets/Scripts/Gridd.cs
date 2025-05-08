@@ -1,16 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Gridd : MonoBehaviour
 {
 
     [SerializeField] private Transform plane;
+    [SerializeField] private LayerMask layerMask;
 
     private Vector2Int GridSize;
     private Vector3 Bounds;
     private Node[,] grid;
     private float nodeRadius = 0.5f;
     private float nodeDiameter { get { return 2 * nodeRadius; } } 
+
+    public int MaxSize {  get { return GridSize.x * GridSize.y; } }
 
     void Awake() 
     {
@@ -36,7 +40,7 @@ public class Gridd : MonoBehaviour
                 float posy = bottomleft.y + j * nodeDiameter + nodeRadius;
                 Vector3 wop = new Vector3(posx, 0, posy);
 
-                bool wlk = !Physics.CheckSphere(wop, nodeRadius);
+                bool wlk = !Physics.CheckSphere(wop, nodeRadius, layerMask);
 
                 grid[i, j] = new Node(i, j, wlk, wop);
             }
@@ -85,6 +89,15 @@ public class Gridd : MonoBehaviour
                 Gizmos.DrawCube(pos, Vector3.one * (nodeDiameter - 0.2f));
             }
         }
+    }
+
+    public bool InsideBound(Vector3 pos)
+    {
+        int x = Mathf.RoundToInt((pos.x + Bounds.x / 2) / nodeDiameter);
+        int y = Mathf.RoundToInt((pos.z + Bounds.z / 2) / nodeDiameter);
+
+        if (x >= GridSize.x || y >= GridSize.y || x < 0 || y < 0) return false;
+        return true;
     }
 
 }
