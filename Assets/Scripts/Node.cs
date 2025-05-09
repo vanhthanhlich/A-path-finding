@@ -6,7 +6,7 @@ public class Node : HeapItem<Node>
     public bool walkable;
     private int index;
 
-    public Vector3 position;
+    public Vector3 worldPosition;
     public int GridX;
     public int GridY;
 
@@ -23,7 +23,7 @@ public class Node : HeapItem<Node>
         GridX = x;
         GridY = y;
         walkable = _wlk;
-        position = _pos;
+        worldPosition = _pos;
     }
 
     public int Index { 

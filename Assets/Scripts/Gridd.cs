@@ -64,31 +64,16 @@ public class Gridd : MonoBehaviour
 
         return neighbours;
     }
-    public Node GridFromWorldPoint(Vector3 pos)
+    public Node GridFromWorldPoint(Vector3 worldPosition)
     {
-        int x = Mathf.RoundToInt((pos.x + Bounds.x / 2) / nodeDiameter);
-        int y = Mathf.RoundToInt((pos.z + Bounds.z / 2) / nodeDiameter);
+        float percentX = (worldPosition.x + Bounds.x / 2) / Bounds.x;
+        float percentY = (worldPosition.z + Bounds.z / 2) / Bounds.z;
+        percentX = Mathf.Clamp01(percentX);
+        percentY = Mathf.Clamp01(percentY);
 
+        int x = Mathf.RoundToInt((GridSize.x - 1) * percentX);
+        int y = Mathf.RoundToInt((GridSize.y - 1) * percentY);
         return grid[x, y];
-    }
-
-    public List<Node> path;
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireCube(Vector3.zero, Bounds);
-
-        if(grid != null)
-        {
-            foreach (Node node in grid)
-            { 
-                Gizmos.color = node.walkable ? Color.white : Color.red;
-
-                if(path != null && path.Contains(node)) Gizmos.color = Color.cyan;
-
-                Vector3 pos = node.position; pos.y = 1;
-                Gizmos.DrawCube(pos, Vector3.one * (nodeDiameter - 0.2f));
-            }
-        }
     }
 
     public bool InsideBound(Vector3 pos)
@@ -98,6 +83,18 @@ public class Gridd : MonoBehaviour
 
         if (x >= GridSize.x || y >= GridSize.y || x < 0 || y < 0) return false;
         return true;
+    }
+
+    public Transform tata;
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+
+        if (tata == null || grid == null) return;
+
+        var n = GridFromWorldPoint(tata.position);
+
+        Gizmos.DrawCube(n.worldPosition, Vector3.one);
     }
 
 }
