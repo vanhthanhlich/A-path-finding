@@ -23,11 +23,7 @@ public class Node : HeapItem<Node>
         GridX = x;
         GridY = y;
         walkable = _wlk;
-<<<<<<< HEAD
         worldPosition = _pos;
-=======
-        position = _pos;
->>>>>>> origin
     }
 
     public int Index { 
