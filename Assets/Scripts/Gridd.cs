@@ -97,4 +97,13 @@ public class Gridd : MonoBehaviour
         Gizmos.DrawCube(n.worldPosition, Vector3.one);
     }
 
+    public bool InsideBound(Vector3 pos)
+    {
+        int x = Mathf.RoundToInt((pos.x + Bounds.x / 2) / nodeDiameter);
+        int y = Mathf.RoundToInt((pos.z + Bounds.z / 2) / nodeDiameter);
+
+        if (x >= GridSize.x || y >= GridSize.y || x < 0 || y < 0) return false;
+        return true;
+    }
+
 }

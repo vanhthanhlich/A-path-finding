@@ -736,7 +736,10 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 8
+<<<<<<< HEAD
   tata: {fileID: 891272000}
+=======
+>>>>>>> origin
 --- !u!4 &825145980
 Transform:
   m_ObjectHideFlags: 0
@@ -1253,12 +1256,17 @@ Transform:
   m_GameObject: {fileID: 973531171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+<<<<<<< HEAD
   m_LocalPosition: {x: -5.35, y: 1, z: -3.57}
+=======
+  m_LocalPosition: {x: -5.35, y: 0.6676195, z: -3.57}
+>>>>>>> origin
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< HEAD
 --- !u!114 &973531176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1273,6 +1281,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 891272000}
   moveSpeed: 5
+=======
+>>>>>>> origin
 --- !u!1 &1045214400
 GameObject:
   m_ObjectHideFlags: 0

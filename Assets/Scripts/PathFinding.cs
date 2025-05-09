@@ -8,6 +8,11 @@ public class PathFinding : MonoBehaviour
 {
     private PathRequestManager requestManager;
     private Gridd grid;
+<<<<<<< HEAD
+=======
+    public Transform seeker, target;
+    bool success = true;
+>>>>>>> origin
 
     private void Awake()
     {
@@ -17,13 +22,24 @@ public class PathFinding : MonoBehaviour
 
     public void StartFindPath(Vector3 startPos, Vector3 targetPos)
     {
+<<<<<<< HEAD
         StartCoroutine(FindPath(startPos, targetPos));
+=======
+        if(success && grid.InsideBound(seeker.position) && grid.InsideBound(target.position))
+        {
+            FindPath(seeker.position, target.position);
+        }
+>>>>>>> origin
     }
     private IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
     {
+
+
+        success = false;
         Node startNode = grid.GridFromWorldPoint(startPos);
         Node targetNode = grid.GridFromWorldPoint(targetPos);
 
+<<<<<<< HEAD
         bool success = TryFindPath(startPos, targetPos);
         Vector3[] waypoints = new Vector3[0];
         yield return null;
@@ -55,6 +71,30 @@ public class PathFinding : MonoBehaviour
             Node currentNode = openSet.RemoveFirst();
 
             if (currentNode == targetNode) return true;
+=======
+        if(!targetNode.walkable || !startNode.walkable)
+        {
+            success = true;
+            return;
+        }
+
+        Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
+
+        HashSet<Node> visited = new HashSet<Node>();
+
+
+        openSet.Add(startNode);
+        while(openSet.Count > 0)
+        {
+            Node currentNode = openSet.RemoveFirst();
+
+            if(currentNode == targetNode)
+            {
+                success = true;
+                RetracePath(startNode, targetNode);
+                return;
+            }
+>>>>>>> origin
 
             visited.Add(currentNode);
 
@@ -77,7 +117,11 @@ public class PathFinding : MonoBehaviour
         return false;
     }
 
+<<<<<<< HEAD
     private Vector3[] RetracePath(Node startNode, Node endNode)
+=======
+    void RetracePath(Node startNode, Node endNode)
+>>>>>>> origin
     {
         List<Node> path = new List<Node>();
         while(startNode != endNode)
