@@ -4,6 +4,7 @@ public class Node : HeapItem<Node>
 {
     public Node Parent;
     public bool walkable;
+    public int movementPenalty;
     private int index;
 
     public Vector3 worldPosition;
@@ -18,12 +19,13 @@ public class Node : HeapItem<Node>
         get { return gCost + hCost; }
     }
 
-    public Node(int x, int y, bool _wlk, Vector3 _pos)
+    public Node(int x, int y, bool _wlk, Vector3 _pos, int movementPenalty)
     {
         GridX = x;
         GridY = y;
         walkable = _wlk;
         worldPosition = _pos;
+        this.movementPenalty = movementPenalty;
     }
 
     public int Index { 

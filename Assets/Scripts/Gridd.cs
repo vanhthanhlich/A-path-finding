@@ -16,6 +16,10 @@ public class Gridd : MonoBehaviour
 
     public int MaxSize {  get { return GridSize.x * GridSize.y; } }
 
+    public TerrainType[] walkableRegion;
+    private LayerMask walkableLayer;
+    Dictionary<int, int> walkableRegionDictionary = new Dictionary<int, int>();
+
     void Awake() 
     {
         Bounds = plane.GetComponent<Renderer>().bounds.size;
@@ -23,6 +27,12 @@ public class Gridd : MonoBehaviour
         GridSize.x = Mathf.RoundToInt(Bounds.x / nodeDiameter);
         GridSize.y = Mathf.RoundToInt(Bounds.z / nodeDiameter);
 
+        foreach(var region in  walkableRegion)
+        {
+            walkableLayer.value |= region.terrainMask.value;
+            walkableRegionDictionary.Add((int)Mathf.Log(region.terrainMask.value, 2), region.terrainPenalty);
+        }
+ 
         CreateGrid();
     }
 
@@ -42,7 +52,17 @@ public class Gridd : MonoBehaviour
 
                 bool wlk = !Physics.CheckSphere(wop, nodeRadius, layerMask);
 
-                grid[i, j] = new Node(i, j, wlk, wop);
+                int movementPenalty = 0;
+                if(wlk)
+                {
+                    Ray ray = new Ray(wop + Vector3.up * 50, Vector3.down);
+                    if(Physics.Raycast(ray, out RaycastHit hit, 100))
+                    {
+                        walkableRegionDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
+                    }
+                }
+
+                grid[i, j] = new Node(i, j, wlk, wop, movementPenalty);
             }
         }
     }
@@ -89,17 +109,12 @@ public class Gridd : MonoBehaviour
         if (x >= GridSize.x || y >= GridSize.y || x < 0 || y < 0) return false;
         return true;
     }
-
-    public Transform tata;
-    private void OnDrawGizmos()
+    
+    [System.Serializable]
+    public class TerrainType
     {
-        Gizmos.color = Color.cyan;
-
-        if (tata == null || grid == null) return;
-
-        var n = GridFromWorldPoint(tata.position);
-
-        Gizmos.DrawCube(n.worldPosition, Vector3.one);
+        public LayerMask terrainMask;
+        public int terrainPenalty;
     }
 
 }
