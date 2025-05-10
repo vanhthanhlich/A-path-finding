@@ -22,9 +22,6 @@ public class PathFinding : MonoBehaviour
     }
     private IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
     {
-
-
-        success = false;
         Node startNode = grid.GridFromWorldPoint(startPos);
         Node targetNode = grid.GridFromWorldPoint(targetPos);
 

@@ -78,8 +78,13 @@ public class Gridd : MonoBehaviour
 
     public bool InsideBound(Vector3 pos)
     {
-        int x = Mathf.RoundToInt((pos.x + Bounds.x / 2) / nodeDiameter);
-        int y = Mathf.RoundToInt((pos.z + Bounds.z / 2) / nodeDiameter);
+        float percentX = (pos.x + Bounds.x / 2) / Bounds.x;
+        float percentY = (pos.z + Bounds.z / 2) / Bounds.z;
+        percentX = Mathf.Clamp01(percentX);
+        percentY = Mathf.Clamp01(percentY);
+
+        int x = Mathf.RoundToInt((GridSize.x - 1) * percentX);
+        int y = Mathf.RoundToInt((GridSize.y - 1) * percentY);
 
         if (x >= GridSize.x || y >= GridSize.y || x < 0 || y < 0) return false;
         return true;
@@ -95,15 +100,6 @@ public class Gridd : MonoBehaviour
         var n = GridFromWorldPoint(tata.position);
 
         Gizmos.DrawCube(n.worldPosition, Vector3.one);
-    }
-
-    public bool InsideBound(Vector3 pos)
-    {
-        int x = Mathf.RoundToInt((pos.x + Bounds.x / 2) / nodeDiameter);
-        int y = Mathf.RoundToInt((pos.z + Bounds.z / 2) / nodeDiameter);
-
-        if (x >= GridSize.x || y >= GridSize.y || x < 0 || y < 0) return false;
-        return true;
     }
 
 }
