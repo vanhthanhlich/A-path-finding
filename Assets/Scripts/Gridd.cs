@@ -1,6 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEngine.Rendering;
+using System;
+using Unity.Jobs;
+using System.Net.Sockets;
+using UnityEngine.Assertions.Must;
+using System.Net.NetworkInformation;
 
 public class Gridd : MonoBehaviour
 {
@@ -20,8 +26,15 @@ public class Gridd : MonoBehaviour
     private LayerMask walkableLayer;
     Dictionary<int, int> walkableRegionDictionary = new Dictionary<int, int>();
 
+    private int MinPenalty, MaxPenalty;
+    public int obstacalePenalty = 10;
+    [SerializeField] public int blurSize;
+
     void Awake() 
     {
+        MinPenalty = int.MaxValue;
+        MaxPenalty = int.MinValue;
+
         Bounds = plane.GetComponent<Renderer>().bounds.size;
         
         GridSize.x = Mathf.RoundToInt(Bounds.x / nodeDiameter);
@@ -61,8 +74,66 @@ public class Gridd : MonoBehaviour
                         walkableRegionDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
                     }
                 }
-
+                else movementPenalty = obstacalePenalty;
+                Debug.Log(movementPenalty);
                 grid[i, j] = new Node(i, j, wlk, wop, movementPenalty);
+            }
+        }
+        BlurMovementPenalty(blurSize);
+    }
+
+    private void BlurMovementPenalty(int blursize)
+    {        
+        int[,] blurRow = new int[GridSize.x, GridSize.y];
+        int[,] blurCol = new int[GridSize.x, GridSize.y];
+
+        for(int i = 0; i < GridSize.x; i++) 
+        {
+            // calculate for j = 0
+            for(int j = -blursize; j <= blursize; j ++) 
+            {
+                int y = Mathf.Clamp(j, 0, GridSize.y - 1);
+                blurRow[i, 0] += grid[i, y].movementPenalty;
+            }
+
+            // calculate the rest
+            for(int j = 1; j < GridSize.y; j ++) {
+                int delColumnIndex = Mathf.Clamp(j - blursize - 1, 0, GridSize.y - 1);
+                int addColumnIndex = Mathf.Clamp(j + blursize, 0, GridSize.y - 1);
+
+                int addValue = grid[i, addColumnIndex].movementPenalty;
+                int delValue = grid[i, delColumnIndex].movementPenalty;
+
+                blurRow[i, j] = blurRow[i, j - 1] + addValue - delValue;
+            }
+        }
+
+        for(int j = 0; j < GridSize.y; j ++) 
+        {
+            for(int i = -blursize; i <= blursize; i++) {
+                int x = Mathf.Clamp(i, 0, GridSize.x - 1);
+                blurCol[0, j] += blurRow[x, j];
+            }
+
+            for(int i = 1; i < GridSize.x; i ++) 
+            {
+                int delRowIndex = Mathf.Clamp(i - blursize - 1, 0, GridSize.x - 1);
+                int addRowIndex = Mathf.Clamp(i + blursize, 0, GridSize.x - 1);
+
+                int delValue = blurRow[delRowIndex, j];
+                int addValue = blurRow[addRowIndex, j];
+
+                blurCol[i, j] = blurCol[i - 1, j] + addValue - delValue;
+            }
+        }
+
+        int squareSize = 2 * blursize + 1;
+        for(int i = 0; i < GridSize.x; i ++) {
+            for(int j = 0; j < GridSize.y; j ++) {
+                grid[i, j].movementPenalty = Mathf.RoundToInt((float)blurCol[i, j] / (squareSize * squareSize));
+
+                MinPenalty = Mathf.Min(MinPenalty, grid[i, j].movementPenalty);
+                MaxPenalty = Mathf.Max(MaxPenalty, grid[i, j].movementPenalty);
             }
         }
     }
@@ -84,6 +155,7 @@ public class Gridd : MonoBehaviour
 
         return neighbours;
     }
+  
     public Node GridFromWorldPoint(Vector3 worldPosition)
     {
         float percentX = (worldPosition.x + Bounds.x / 2) / Bounds.x;
@@ -110,11 +182,23 @@ public class Gridd : MonoBehaviour
         return true;
     }
     
-    [System.Serializable]
+    [Serializable]
     public class TerrainType
     {
         public LayerMask terrainMask;
         public int terrainPenalty;
+    }
+
+    public bool displayGridGizmos = false;
+    void OnDrawGizmos()
+    {
+        if(grid == null || !displayGridGizmos) return;
+        foreach(var n in grid) {
+            	
+                Gizmos.color = Color.Lerp (Color.white, Color.black, Mathf.InverseLerp (MinPenalty, MaxPenalty, n.movementPenalty));
+				Gizmos.color = (n.walkable) ? Gizmos.color : Color.red;
+				Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter));
+        }
     }
 
 }

@@ -15,7 +15,7 @@ public class Unit : MonoBehaviour
     
     private void Start()
     {
-        StartCoroutine(hihi());
+        PathRequestManager.RequestPath(this.transform.position, target.position, OnPathFound);
     }
 
     private void LookToward(Vector3 position)
