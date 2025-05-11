@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Net.NetworkInformation;
 using JetBrains.Annotations;
+using Unity.Burst.Intrinsics;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -10,9 +12,18 @@ public class Unit : MonoBehaviour
 
     private int PathIndex = 0;
     private Vector3[] path;
+    
     private void Start()
     {
         StartCoroutine(hihi());
+    }
+
+    private void LookToward(Vector3 position)
+    {
+        Vector3 idk = position - transform.position;
+        float deg = Mathf.Atan2(idk.x, idk.z) * Mathf.Rad2Deg;
+        
+        transform.rotation = Quaternion.Euler(-90, 0, deg);
     }
 
     private IEnumerator hihi()
@@ -44,6 +55,7 @@ public class Unit : MonoBehaviour
                 if (PathIndex >= path.Length) break;
             }
             transform.position = Vector3.MoveTowards(transform.position, path[PathIndex], Time.deltaTime * moveSpeed);
+            LookToward(path[PathIndex]);
             yield return null;
         }
     }
