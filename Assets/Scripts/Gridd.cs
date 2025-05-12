@@ -75,7 +75,6 @@ public class Gridd : MonoBehaviour
                     }
                 }
                 else movementPenalty = obstacalePenalty;
-                Debug.Log(movementPenalty);
                 grid[i, j] = new Node(i, j, wlk, wop, movementPenalty);
             }
         }

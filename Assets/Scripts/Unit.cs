@@ -10,10 +10,10 @@ public class Unit : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float moveSpeed;
 
-    private int PathIndex = 0;
-    private Vector3[] path;
+    private Pathh path;
+    public float turnDist;
     
-    private void Start()
+    private void Update()
     {
         PathRequestManager.RequestPath(this.transform.position, target.position, OnPathFound);
     }
@@ -35,47 +35,27 @@ public class Unit : MonoBehaviour
         }
     }
 
-    private void OnPathFound(Vector3[] path, bool success)
+    private void OnPathFound(Vector3[] wpoints, bool success)
     {
-        if (!success || path.Length == 0) return;
+        if (!success || wpoints.Length == 0) return;
         
-        this.path = path;
+        path = new Pathh(wpoints, transform.position, turnDist);
+
         StopCoroutine("FollowPath");
         StartCoroutine("FollowPath");
     }
 
     private IEnumerator FollowPath()
     {
-        PathIndex = 0;
         while (true)
         {
-            if(transform.position == path[PathIndex])
-            {
-                PathIndex++;
-                if (PathIndex >= path.Length) break;
-            }
-            transform.position = Vector3.MoveTowards(transform.position, path[PathIndex], Time.deltaTime * moveSpeed);
-            LookToward(path[PathIndex]);
             yield return null;
         }
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.black;
-        if (path == null) return;
-        for(int i = PathIndex; i < path.Length; i++)
-        {
-            if(i == PathIndex)
-            {
-                Gizmos.DrawLine(transform.position, path[i]);
-            }
-            else
-            {
-                Gizmos.DrawLine(path[i - 1], path[i]);
-            }
-            Gizmos.DrawCube(path[i], Vector3.one * 0.2f);
-        }
+        if (path != null) path.DrawWithGizmos();
     }
 
 }

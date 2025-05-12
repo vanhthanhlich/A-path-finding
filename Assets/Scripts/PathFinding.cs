@@ -85,7 +85,6 @@ public class PathFinding : MonoBehaviour
             path.Add(endNode);
             endNode = endNode.Parent;
         }
-        path.Add(startNode);
 
         path.Reverse();
 
