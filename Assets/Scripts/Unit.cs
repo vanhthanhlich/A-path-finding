@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Net.NetworkInformation;
 using JetBrains.Annotations;
 using Unity.Burst.Intrinsics;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Android;
+using UnityEngine.UIElements;
 
 public class Unit : MonoBehaviour
 {
@@ -18,7 +21,13 @@ public class Unit : MonoBehaviour
     [SerializeField] private float stoppingDist;
 
     private Pathh path;
+    public Vector3 velocity;
 
+    private void Awake()
+    {
+        transform.rotation = Quaternion.Euler(-90, 0, 0);
+        velocity = -transform.up;
+    }
 
     private void Start()
     {
@@ -27,10 +36,17 @@ public class Unit : MonoBehaviour
 
     private void LookToward(Vector3 position)
     {
-        Vector3 idk = position - transform.position;
-        float deg = Mathf.Atan2(idk.x, idk.z) * Mathf.Rad2Deg;
+        Vector3 dir = (position - transform.position).normalized;
+        velocity = Vector3.Lerp(velocity, dir, Time.deltaTime * turnSpeed);
+        
+        float deg = Mathf.Atan2(velocity.x, velocity.z) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(-90, 0, deg);
+    }
 
-        transform.rotation = Quaternion.Euler(0, 0, deg);
+    void DrawRay(Vector3 position, Vector3 direction)
+    {
+        Gizmos.color = Color.red;
+        Debug.DrawRay(position, direction);
     }
 
     private IEnumerator hihi()
@@ -86,11 +102,8 @@ public class Unit : MonoBehaviour
 
             if (followingPath)
             {
-
-                Quaternion rot = Quaternion.LookRotation(path.lookPoints[index] - transform.position);
-
-                transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * turnSpeed);
-                transform.Translate(moveSpeed * speedPercent * Time.deltaTime * Vector3.forward, Space.Self);
+                LookToward(path.lookPoints[index]);        
+                transform.position += (moveSpeed * speedPercent * Time.deltaTime * velocity);
             }
 
             yield return null;
@@ -99,6 +112,12 @@ public class Unit : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        //Vector3 dir = (target.position - transform.position).normalized;
+        //DrawRay(transform.position, dir);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + 10 * velocity);
+
         if (path != null) {
             path.DrawWithGizmos();
         }

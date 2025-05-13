@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 3840d627070083741a75d59301670fd5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.026
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 3840d627070083741a75d59301670fd5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -70,14 +70,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: 3840d627070083741a75d59301670fd5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1123518011424124960}
+      addedObject: {fileID: 503038591495868404}
   m_SourcePrefab: {fileID: -5645937942226959685, guid: 3840d627070083741a75d59301670fd5, type: 3}
 --- !u!1 &2158204268292421554 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6689036041284674117, guid: 3840d627070083741a75d59301670fd5, type: 3}
   m_PrefabInstance: {fileID: 4528578822043085321}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1123518011424124960
+--- !u!114 &503038591495868404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,4 +90,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  moveSpeed: 6
+  moveSpeed: 20
+  turnDist: 2
+  turnSpeed: 10
+  distanceThreshold: 0.5
+  searchCoolDown: 0.2
+  stoppingDist: 5
