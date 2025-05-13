@@ -106,12 +106,6 @@ public class PathFinding : MonoBehaviour
             }
         }
         if (path.Count > 0 && spath.Count > 0 && spath[spath.Count - 1] != path[path.Count - 1].worldPosition) spath.Add(path[path.Count - 1].worldPosition);
-
-        for (int i = 0; i < spath.Count; i ++)
-        {
-            Vector3 pos = spath[i]; pos.y = 1;
-            spath[i] = pos;
-        }
         return spath.ToArray();
     }
 

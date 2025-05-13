@@ -842,8 +842,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 891272000}
-  moveSpeed: 5
+  moveSpeed: 20
   turnDist: 2
+  turnSpeed: 10
+  distanceThreshold: 0.5
+  searchCoolDown: 0.2
+  stoppingDist: 5
 --- !u!135 &665598213
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -927,7 +931,7 @@ Transform:
   m_GameObject: {fileID: 665598211}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.07, y: 0.51, z: -17.31}
+  m_LocalPosition: {x: -13, y: 0, z: -4.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -977,7 +981,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 64
     terrainPenalty: 0
-  obstacalePenalty: 10
+  obstacalePenalty: 50
   blurSize: 2
   displayGridGizmos: 0
 --- !u!4 &825145980
@@ -1170,7 +1174,7 @@ Transform:
   m_GameObject: {fileID: 891271996}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.36, y: 0.51, z: 14.68}
+  m_LocalPosition: {x: 17.8, y: 0, z: 18.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1526,7 +1530,7 @@ Transform:
   m_GameObject: {fileID: 1541178849}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05, y: 0, z: 0.12}
+  m_LocalPosition: {x: 0.05, y: -0.51, z: 0.12}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:

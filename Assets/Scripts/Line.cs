@@ -8,7 +8,7 @@ public class Line
     private float VerticalLineGradient = 1e5f;
     private float gradient, y_intercept;
 
-    private bool FromSide = false;
+    public bool FromSide = false;
     private Vector2 center;
 
     public Line(Vector2 PointOnLine, Vector2 pointPerpendicularToLine)
@@ -19,13 +19,15 @@ public class Line
         gradient = (dy == 0) ? VerticalLineGradient : -dx / dy;
         y_intercept = PointOnLine.y - gradient * PointOnLine.x;
 
-        FromSide = GetSide(PointOnLine);
+        FromSide = GetSide2(pointPerpendicularToLine);
         center = PointOnLine;
     }
 
-    public bool GetSide(Vector2 p) => Vector2.Dot(p, new Vector2(-gradient , 1)) > 0;
+    private Vector2 V3toV2(Vector3 v3) => new Vector2(v3.x, v3.z);
+    public bool GetSide3(Vector3 p) => Vector2.Dot( V3toV2(p) - new Vector2(0, y_intercept), new Vector2(-gradient, 1)) >= 0;
 
-    public bool HasCrossedLine(Vector2 p) => GetSide(p) == FromSide;
+    public bool GetSide2(Vector2 p) => Vector2.Dot(p - new Vector2(0, y_intercept), new Vector2(-gradient, 1)) >= 0;
+    public bool HasCrossedLine(Vector3 p) => GetSide3(p) == FromSide;
 
     public void DrawWithGizmos(float length)
     {
